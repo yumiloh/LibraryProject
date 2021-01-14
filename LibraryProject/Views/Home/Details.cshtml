@@ -1,0 +1,58 @@
+﻿@model LibraryProject.Models.BookModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BookModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ISBN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ISBN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfPages)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfPages)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BookCopies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BookCopies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BorrowedCopies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BorrowedCopies)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
