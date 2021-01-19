@@ -1,0 +1,75 @@
+﻿@model LibraryProject.ViewModels.BookViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Book Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Book.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Book.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Book.ISBN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Book.ISBN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Book.NumberOfPages)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Book.NumberOfPages)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Book.BookCopies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Book.BookCopies)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Book.BorrowedCopies)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Book.BorrowedCopies)
+        </dd>
+
+    </dl>
+    <table class="table">
+        <tr>
+            <th>Users borrowed</th>
+            <th>Copies borrowed</th>
+        </tr>
+        @foreach (var item in Model.Borrowers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Book.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

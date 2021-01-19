@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel;
 
 namespace LibraryProject.Models
 {
     public class BorrowerModel : UserModel
-    { 
-        public List<BookModel> BooksBorrowed { get; set; }
+    {
     }
 }

@@ -1,0 +1,51 @@
+﻿@model LibraryProject.ViewModels.BorrowerViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Borrower Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Borrower.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Borrower.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Borrower.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Borrower.Name)
+        </dd>
+    </dl>
+
+    <table class="table">
+        <tr>
+            <th>Books Borrowed</th>
+            <th>Number of books borrowed</th>
+        </tr>
+        @foreach (var item in Model.BorrowedBooks)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BorrowedCopies)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Borrower.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

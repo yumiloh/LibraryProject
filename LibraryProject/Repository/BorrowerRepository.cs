@@ -1,0 +1,107 @@
+﻿using LibraryProject.DataAccess;
+using LibraryProject.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace LibraryProject.Repository
+{
+    public class BorrowerRepository : IBorrowerRepository
+    {
+        private readonly LibraryContext Context;
+        public BorrowerRepository() : this(new LibraryContext())
+        {
+        }
+        public BorrowerRepository(LibraryContext libraryContext)
+        {
+            this.Context = libraryContext;
+        }
+        public List<BookModel> GetAvailableBooks()
+        {
+            List<BookModel> books = Context.Books.Where<BookModel>(x => (x.BookCopies - x.BorrowedCopies) > 0).ToList();   
+            return books;
+        }
+        public bool BorrowBooks(int? bookID, string borrowerEmail)
+        {
+            BookModel book = this.FindBook(bookID);
+            if (book.IsAvailable)
+            {
+                var borrower = Context.Borrowers.First<BorrowerModel>(x => x.Email.Equals(borrowerEmail));
+                var borrowedBook = new BorrowedBookModel() { Book = book, Borrower = borrower };
+                Context.BorrowedBooks.Add(borrowedBook);
+                book.BorrowedCopies += 1;
+                this.Save();
+                return true;
+            }
+            return false;
+        }
+
+        public bool ReturnBooks(int? bookID, string borrowerEmail)
+        {
+            BookModel book = this.FindBook(bookID);
+            BorrowedBookModel returnedBook = Context.BorrowedBooks.First(x => x.Book.ID.Equals(book.ID) && x.Borrower.Email.Equals(borrowerEmail));
+            Context.BorrowedBooks.Remove(returnedBook);
+            book.BorrowedCopies -= 1;
+            this.Save();
+            return true;
+        }
+
+        public int Save()
+        {
+            return Context.SaveChanges();
+        }
+
+        public BorrowerModel AuthenticateBorrower(BorrowerModel borrower)
+        {
+            BorrowerModel returnBorrower = Context.Borrowers.FirstOrDefault<BorrowerModel>(x => x.Email.Equals(borrower.Email) && x.Password.Equals(borrower.Password));
+            if (returnBorrower != null)
+            {
+                return returnBorrower;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<BookModel> GetBorrowedBook(string borrowerEmail)
+        {
+            List<BookModel> borrowedBooks = (Context.BorrowedBooks.Where<BorrowedBookModel>(x => x.Borrower.Email.Equals(borrowerEmail)).Select(x => x.Book)).Distinct().ToList();
+            
+            /*var query = from b in borrowedBooks 
+                        group b by b.Title into g
+                        select new { Title = g.Key, Total = g.Count() };*/
+
+            /*List<BookModel> query = borrowedBooks
+                .GroupBy(x => x.Title)
+                .Select(y => new BookModel() { Title = y.Key, BorrowedCopies = y.Count()}).ToList();*/
+
+           
+            return borrowedBooks;
+        }
+
+        public BookModel FindBook(int? bookID)
+        {
+            return Context.Books.Find(bookID);
+        }
+
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    Context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

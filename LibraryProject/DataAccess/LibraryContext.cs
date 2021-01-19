@@ -15,5 +15,6 @@ namespace LibraryProject.DataAccess
         public DbSet<BookModel> Books { get; set;}        
         public DbSet<ManagerModel> Managers { get; set;}        
         public DbSet<BorrowerModel> Borrowers { get; set; }
+        public DbSet<BorrowedBookModel> BorrowedBooks { get; set; }
     }
 }

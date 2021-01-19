@@ -1,57 +1,38 @@
-﻿using LibraryProject.DataAccess;
-using LibraryProject.Models;
+﻿using LibraryProject.Models;
 using LibraryProject.Repository;
-using System;
+using LibraryProject.ViewModels;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-
-// Hungarian Notation
 
 namespace LibraryProject.Controllers
 {
-    //[RoutePrefix("Manager")]
-    public class HomeController : Controller
+    public class BookController : Controller
     {
         private ILibraryRepository LibraryRepository { get; set; }
 
-        public HomeController()
+        public BookController()
         {
             this.LibraryRepository = new LibraryRepository();
         }
 
-        //[Route("Index")]
         public ActionResult Index()
         {
             List<BookModel> books = LibraryRepository.GetBooks();
-            /*
-            using (var context = new LibraryContext())
-            {
-                var newBook = new BookModel() { ISBN = "A", BookCopies = 10, Title="Test" };
-
-                context.Books.Add(newBook);
-                var result = context.SaveChanges();
-
-                var bookList = context.Books;
-                var db = context.Database;
-                var c = db.Connection;
-                var totalBooks = bookList.Count();
-            }*/
             return View(books);
         }
-        //[Route("Details")]
+        
         public ActionResult Details (int ? id)
         {
             BookModel book = LibraryRepository.GetBookByID(id);
-            return View(book);
+            var bookViewModel = new BookViewModel(book);
+            return View(bookViewModel);
         }
-        //[Route("Create")]
+        
         public ActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult Create(BookModel model)
         {
@@ -66,7 +47,7 @@ namespace LibraryProject.Controllers
                 return View();
             }
         }
-        //[Route("Edit")]
+        
         [HttpGet]
         public ActionResult Edit(int? id)
         {
@@ -81,6 +62,7 @@ namespace LibraryProject.Controllers
             }
             return View(book);
         }
+
         [HttpPost]
         public ActionResult Edit(BookModel model)
         {
@@ -95,7 +77,7 @@ namespace LibraryProject.Controllers
                 return View();
             }
         }
-        //[Route("Delete")]
+        
         [HttpGet]
         public ActionResult Delete(int? id)
         {
@@ -110,12 +92,18 @@ namespace LibraryProject.Controllers
             }
             return View(book);
         }
+
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int? id)
         {
             LibraryRepository.DeleteBook(id);
             //TODO: throw an error if it cannot return 1 
             return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            LibraryRepository.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

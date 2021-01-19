@@ -1,0 +1,64 @@
+﻿@model LibraryProject.Models.BorrowerModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+<div class="row justify-content-md-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+               
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Login", "Borrower", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+
+
+                    @*
+                        
+                    Add a new field -  select/drop-down with two options for now
+                        1 - Manager
+                        2 - Borrower
+
+                        On submit action
+                        check the Role of the user
+                        
+                        check the Database table according to role
+
+                        move Login page to a separate view and controller e.g.Call it Authentication controller
+
+                        if Borrower -> redirect to boorrower index 
+                        if Manager redirect to manager index
+
+                        also set the user role in session
+
+                        And other than checking the user in session, also check for respective role
+                        for manager pages, we should allow only if manager logged in
+                        and for borrower we should only allow if borrower logged in
+
+                        
+                        *@
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email)
+                        @Html.TextBoxFor(model => model.Email, "", new { @class = "form-control", @placeholder = "Email" })
+
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password)
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Login" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

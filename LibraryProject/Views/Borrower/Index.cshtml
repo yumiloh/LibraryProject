@@ -1,0 +1,57 @@
+﻿@model IEnumerable<LibraryProject.Models.BookModel>
+@using LibraryProject.Models
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Available Books</h2>
+<h3>Welcome @ViewBag.BorrowerName</h3>
+
+<p>@Html.ActionLink("Borrowed Books", "BorrowedBooks")</p>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ISBN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfPages)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BookCopies)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BorrowedCopies)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ISBN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfPages)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BookCopies)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BorrowedCopies)
+        </td>
+        <td>
+            @Html.ActionLink("Borrow", "Borrow", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>
