@@ -7,61 +7,56 @@ using System.Web.Mvc;
 using LibraryProject.ViewModels;
 using LibraryProject.Repository;
 using LibraryProject.DataAccess;
+using LibraryProject.Enums;
 
 namespace LibraryProject.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private IManagerRepository managerRepository { get; set; }
-        private IBorrowerRepository borrowerRepository { get; set; }
-        public AuthenticationController()
+        private IManagerRepository ManagerRepository { get; set; }
+        private IBorrowerRepository BorrowerRepository { get; set; }
+        public AuthenticationController(IManagerRepository managerRepository, IBorrowerRepository borrowerRepository)
         {
-            managerRepository = new ManagerRepository();
-            borrowerRepository = new BorrowerRepository();
+            this.ManagerRepository = managerRepository;
+            this.BorrowerRepository = borrowerRepository;
         }
         [HttpGet]
         public ActionResult Index()
         {
-
             return View();
         }
         [HttpPost]
         public ActionResult Index(LoginViewModel user)
         {
-            if (user.Role == "Manager") //Manager
-            {
-                bool managerFound = managerRepository.FindManager(user);
+            ViewBag.Error = string.Empty;
+            var databaseUser = (user.Role == UserRole.Manager) ? ManagerRepository.FindManager(user) : BorrowerRepository.FindBorrower(user);
 
-                if (managerFound)
-                {
-                    this.Session["ManagerEmail"] = user.Email;
-                    this.Session["ManagerName"] = user.Name;
-                    return RedirectToAction("Index", "Manager");
-                }
-            }
-            else if (user.Role == "Borrower") //Borrower
+            if (databaseUser != null)
             {
-                bool borrowerFound = borrowerRepository.FindBorrower(user);
-                if (borrowerFound)
-                {
-                    this.Session["BorrowerEmail"] = user.Email;
-                    this.Session["BorrowerName"] = user.Name;
-                    return RedirectToAction("Index", "Borrower");
-                }
+                user.Name = databaseUser.Name;
+                this.Session["User"] = user;
+                this.Session["UserRole"] = Convert.ToString(user.Role);
+                return RedirectToAction("Index", Convert.ToString(user.Role));
             }
             else
             {
-                this.Session[""] = string.Empty;
-                // TODO: We will avoid using ViewBag later
-                ViewBag.InvalidLogin = true;
+                ViewBag.Error = "Invalid username or password.";
             }
-            return View();
+
+            return View(user);
+        }
+
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            this.Session.Abandon();
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            managerRepository.Dispose();
-            borrowerRepository.Dispose();
+            ManagerRepository.Dispose();
+            BorrowerRepository.Dispose();
             base.Dispose(disposing);
         }
     }

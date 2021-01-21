@@ -30,28 +30,37 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ISBN)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfPages)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BookCopies)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowedCopies)
-        </td>
-        <td>
-            @Html.ActionLink("Borrow", "Borrow", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ISBN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfPages)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookCopies)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowedCopies)
+            </td>
+
+
+            @if ((item.BookCopies - item.BorrowedCopies) > 0)
+            {
+                <td>
+                    @Html.ActionLink("Borrow", "Borrow", new { id = item.ID }) |
+
+                </td>
+            }
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.ID })
+            </td>
+        </tr>
+    }
 
 </table>

@@ -29,14 +29,17 @@
 
     <table class="table">
         <tr>
-            <th>Books Borrowed</th>
-            <th>Number of books borrowed</th>
+            <th>Borrowed Books</th>
+            <th>Number of copies</th>
         </tr>
         @foreach (var item in Model.BorrowedBooks)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
+                    @*<a href="@Url.Action("Details", "Book", new {id=item.ID})">
+
+                    </a>*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BorrowedCopies)

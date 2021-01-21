@@ -1,6 +1,8 @@
-﻿using LibraryProject.Models;
+﻿using LibraryProject.Enums;
+using LibraryProject.Models;
 using LibraryProject.Repository;
 using LibraryProject.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -10,14 +12,15 @@ namespace LibraryProject.Controllers
     {
         private ILibraryRepository LibraryRepository { get; set; }
 
-        public BookController()
+        public BookController(ILibraryRepository libraryRepository)
         {
-            this.LibraryRepository = new LibraryRepository();
+            this.LibraryRepository = libraryRepository;
         }
 
         public ActionResult Index()
         {
             List<BookModel> books = LibraryRepository.GetBooks();
+            ViewBag.IsManager = (Convert.ToString(Session["UserRole"]).Equals(UserRole.Manager.ToString()));
             return View(books);
         }
         

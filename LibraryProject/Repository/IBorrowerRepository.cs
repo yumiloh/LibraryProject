@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Repository
 {
-    interface IBorrowerRepository: IDisposable
+    public interface IBorrowerRepository: IDisposable
     {
-        List<BookModel> GetAvailableBooks();
+        List<BookModel> GetAllBooks();
         bool BorrowBooks(int? bookID, string borrowerEmail);
         bool ReturnBooks(int? bookID, string borrowerEmail);
-        BorrowerModel AuthenticateBorrower(BorrowerModel borrower);
+        UserModel FindBorrower(UserModel borrower);
         List<BookModel> GetBorrowedBook(string borrowerEmail);
        
     }

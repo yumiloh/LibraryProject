@@ -1,4 +1,5 @@
-﻿@model IEnumerable<LibraryProject.Models.BookModel>
+﻿@using LibraryProject.Enums
+@model IEnumerable<LibraryProject.Models.BookModel>
 
 @{
     ViewBag.Title = "Book";
@@ -28,28 +29,33 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ISBN)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfPages)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BookCopies)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BorrowedCopies)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ISBN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfPages)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookCopies)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowedCopies)
+            </td>
+
+            @if (ViewBag.IsManager)
+            {
+                <td>
+                    @Html.ActionLink("Edit ", "Edit", new { id = item.ID })|
+                    @Html.ActionLink("Details ", "Details", new { id = item.ID })|
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            }
+        </tr>
+    }
 </table>

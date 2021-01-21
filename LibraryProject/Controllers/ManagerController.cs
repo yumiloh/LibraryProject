@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LibraryProject.DataAccess;
+using LibraryProject.Enums;
 using LibraryProject.Models;
 using LibraryProject.Repository;
 using LibraryProject.ViewModels;
@@ -15,22 +16,38 @@ namespace LibraryProject.Controllers
 {
     public class ManagerController : Controller
     {
-        private IManagerRepository BorrowerRepository { get; set; }
+        private IManagerRepository BorrowerRepository;
 
-        public ManagerController()
+        public ManagerController(IManagerRepository borrowerRepository)
         {
-            this.BorrowerRepository = new ManagerRepository();
+            this.BorrowerRepository = borrowerRepository;
+        }
+        private LoginViewModel LoggedInUser
+        {
+            get
+            {
+                return this.Session["User"] as LoginViewModel;
+            }
         }
 
-        // GET: Borrower
+        private bool IsBorrowerLoggedIn
+        {
+            get
+            {
+                return (LoggedInUser != null && LoggedInUser.Role == UserRole.Manager);
+            }
+        }
         public ActionResult Index()
         {
-            List<BorrowerModel> borrowerModel = BorrowerRepository.GetBorrower();
+            if (!this.IsBorrowerLoggedIn)
+            {
+                return RedirectToAction("Index", "Authentication");
+            }
 
+            List<BorrowerModel> borrowerModel = BorrowerRepository.GetBorrower();
             return View(borrowerModel);
         }
 
-        // GET: Borrower/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)

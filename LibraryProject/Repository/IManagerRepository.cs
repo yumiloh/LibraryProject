@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Repository
 {
-    interface IManagerRepository: IDisposable
+    public interface IManagerRepository: IDisposable
     {
         List<BorrowerModel> GetBorrower();
         BorrowerModel GetBorrowerByID(int? borrowerID);
@@ -15,5 +15,6 @@ namespace LibraryProject.Repository
         int DeleteBorrower(int? borrowerID);
         int UpdateBorrower(BorrowerModel borrower);
         int Save();
+        UserModel FindManager(UserModel manager);
     }
 }

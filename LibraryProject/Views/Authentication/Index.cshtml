@@ -1,0 +1,48 @@
+﻿@using LibraryProject.Enums
+
+@model LibraryProject.ViewModels.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+<div class="row justify-content-md-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                @ViewBag.Error
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "Authentication", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Role)
+                    @Html.DropDownListFor(model => model.Role, new List<SelectListItem>
+                    {
+                        new SelectListItem{Text=Convert.ToString(UserRole.Manager), Value=Convert.ToString(UserRole.Manager)},
+                        new SelectListItem{Text="Borrower", Value="Borrower"}
+                    }, new { @class = "form-control" })
+                </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email)
+                        @Html.TextBoxFor(model => model.Email, "", new { @class = "form-control", @placeholder = "Email" })
+
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password)
+                        @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Login" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

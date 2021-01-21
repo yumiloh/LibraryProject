@@ -14,13 +14,14 @@ namespace LibraryProject.Repository
         public ManagerRepository() : this(new LibraryContext())
         {
         }
+        
         public ManagerRepository(LibraryContext libraryContext)
         {
             this.Context = libraryContext;
         }
         public List<BorrowerModel> GetBorrower()
         {
-            
+
             return Context.Borrowers.ToList();
         }
         public BorrowerModel CreateBorrower(BorrowerModel borrower)
@@ -39,7 +40,7 @@ namespace LibraryProject.Repository
 
         public BorrowerModel GetBorrowerByID(int? borrowerID)
         {
-            
+
             return Context.Borrowers.Find(borrowerID);
         }
 
@@ -58,6 +59,12 @@ namespace LibraryProject.Repository
         {
             return Context.SaveChanges();
         }
+
+        public UserModel FindManager(UserModel manager)
+        {
+            return Context.Managers.FirstOrDefault<ManagerModel>(x => x.Email.Equals(manager.Email) && x.Password.Equals(manager.Password));
+        }
+
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
         {

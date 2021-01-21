@@ -17,6 +17,16 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Library", "Index", "Book", new { area = "" }, new { @class = "navbar-brand" })
+
+
+                @if (Session["User"] != null)
+                {
+                    @Html.ActionLink("Logout", "Logout", "Authentication", new { area = "" }, new { @class = "navbar-brand" })
+                }
+                else
+                {
+                    @Html.ActionLink("Login", "Index", "Authentication", new { area = "" }, new { @class = "navbar-brand" })
+                }
             </div>
             @*<div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

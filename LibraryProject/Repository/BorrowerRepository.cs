@@ -1,5 +1,6 @@
 ﻿using LibraryProject.DataAccess;
 using LibraryProject.Models;
+using LibraryProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +11,15 @@ namespace LibraryProject.Repository
     public class BorrowerRepository : IBorrowerRepository
     {
         private readonly LibraryContext Context;
-        public BorrowerRepository() : this(new LibraryContext())
-        {
-        }
+        
         public BorrowerRepository(LibraryContext libraryContext)
         {
             this.Context = libraryContext;
         }
-        public List<BookModel> GetAvailableBooks()
+        public List<BookModel> GetAllBooks()
         {
-            List<BookModel> books = Context.Books.Where<BookModel>(x => (x.BookCopies - x.BorrowedCopies) > 0).ToList();   
-            return books;
+            //List<BookModel> books = Context.Books.Where<BookModel>(x => (x.BookCopies - x.BorrowedCopies) > 0).ToList();   
+            return Context.Books.ToList();
         }
         public bool BorrowBooks(int? bookID, string borrowerEmail)
         {
@@ -52,18 +51,14 @@ namespace LibraryProject.Repository
             return Context.SaveChanges();
         }
 
-        public BorrowerModel AuthenticateBorrower(BorrowerModel borrower)
+        public UserModel FindBorrower(UserModel borrower)
         {
             BorrowerModel returnBorrower = Context.Borrowers.FirstOrDefault<BorrowerModel>(x => x.Email.Equals(borrower.Email) && x.Password.Equals(borrower.Password));
-            if (returnBorrower != null)
-            {
-                return returnBorrower;
-            }
-            else
-            {
-                return null;
-            }
+
+
+            return returnBorrower;
         }
+
 
         public List<BookModel> GetBorrowedBook(string borrowerEmail)
         {

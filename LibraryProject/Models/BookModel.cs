@@ -10,6 +10,7 @@ namespace LibraryProject.Models
 {
     public class BookModel
     {
+        [Key]
         public int ID { get; set; }
         [Required]
         [MaxLength(100)]
@@ -26,7 +27,6 @@ namespace LibraryProject.Models
         [Range(0, int.MaxValue, ErrorMessage = "Please enter a positive value")]
         public int BookCopies { get; set; }
         [DisplayName("Total Borrowed Copies")]
-        [HiddenInput(DisplayValue = false)]
         public int BorrowedCopies { get; set; }
         public bool IsAvailable
         {
@@ -35,7 +35,6 @@ namespace LibraryProject.Models
                 return (BookCopies - BorrowedCopies > 0);
             }
         }
-
         public BookModel()
         {
             this.NumberOfPages = 0;
