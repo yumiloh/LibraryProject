@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LibraryProject.Base;
 using LibraryProject.DataAccess;
 using LibraryProject.Enums;
 using LibraryProject.Models;
@@ -14,7 +15,7 @@ using LibraryProject.ViewModels;
 
 namespace LibraryProject.Controllers
 {
-    public class BorrowerController : Controller
+    public class BorrowerController : LibraryBaseController
     {
         private IBorrowerRepository BorrowerRepository { get; set; }
         private ILibraryRepository LibraryRepository { get; set; }
@@ -22,23 +23,6 @@ namespace LibraryProject.Controllers
         {
             BorrowerRepository = borrowerRepository;
             LibraryRepository = libraryRepository;
-        }
-        
-        private LoginViewModel LoggedInUser
-        {
-            get
-            {
-                return this.Session["User"] as LoginViewModel;
-            }
-
-        }
-
-        private bool IsBorrowerLoggedIn
-        {
-            get
-            {
-                return (LoggedInUser != null && LoggedInUser.Role == UserRole.Borrower);
-            }
         }
 
         public ActionResult Index()
@@ -49,7 +33,7 @@ namespace LibraryProject.Controllers
                 return RedirectToAction("Index", "Authentication");
             }
 
-            this.ViewBag.BorrowerName = LoggedInUser.Name;
+            this.ViewBag.BorrowerName = this.CurrentUser.Name;
             List<BookModel> allBooks = BorrowerRepository.GetAllBooks();
 
             return View(allBooks);
@@ -79,7 +63,7 @@ namespace LibraryProject.Controllers
         [HttpPost, ActionName("Borrow")]
         public ActionResult BorrowConfirmed(int? id)
         {
-            string borrowerEmail = LoggedInUser.Email;
+            string borrowerEmail = this.CurrentUser?.Email;
             bool isBorrowed = BorrowerRepository.BorrowBooks(id,borrowerEmail);
             if (isBorrowed)
             {
@@ -109,8 +93,8 @@ namespace LibraryProject.Controllers
         [HttpPost, ActionName("Return")]
         public ActionResult ReturnConfirmed(int? id)
         {
-            string returnerEmail = LoggedInUser.Email;
-            bool isReturned = BorrowerRepository.ReturnBooks(id, returnerEmail);
+            bool isReturned = BorrowerRepository.ReturnBooks(id, this.CurrentUser?.Email);
+
             if (isReturned)
             {
                 return RedirectToAction("Index");
@@ -127,30 +111,10 @@ namespace LibraryProject.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        /*public ActionResult Login(BorrowerModel inputModel)
-        {
-            var borrower = borrowerRepository.AuthenticateBorrower(inputModel);
-
-            if (borrower != null)
-            {
-               this.Session["BorrowerEmail"] = borrower.Email;
-                this.Session["BorrowerName"] = borrower.Name;
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                this.Session["BorrowerEmail"] = string.Empty;
-                // TODO: We will avoid using ViewBag later
-                ViewBag.InvalidLogin = true;
-            }
-            return View();
-        }*/
         [HttpGet]
-        public ActionResult BorrowedBooks()
+        public ActionResult BooksBorrowed()
         {
-            string borrowerEmail = LoggedInUser.Email;
+            string borrowerEmail = this.CurrentUser?.Email;
             var borrowedBooks = BorrowerRepository.GetBorrowedBook(borrowerEmail);
             return View(borrowedBooks);
         }

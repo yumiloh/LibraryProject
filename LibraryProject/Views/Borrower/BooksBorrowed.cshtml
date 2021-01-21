@@ -17,12 +17,6 @@
         <th>
             @Html.DisplayNameFor(model => model.NumberOfPages)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BookCopies)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BorrowedCopies)
-        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -36,12 +30,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NumberOfPages)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookCopies)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem=> item.BorrowedCopies)
             </td>
             <td>
                 @Html.ActionLink("Return Book", "Return", new { id = item.ID })

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LibraryProject.Base;
 using LibraryProject.DataAccess;
 using LibraryProject.Enums;
 using LibraryProject.Models;
@@ -14,7 +15,7 @@ using LibraryProject.ViewModels;
 
 namespace LibraryProject.Controllers
 {
-    public class ManagerController : Controller
+    public class ManagerController : LibraryBaseController
     {
         private IManagerRepository BorrowerRepository;
 
@@ -22,24 +23,10 @@ namespace LibraryProject.Controllers
         {
             this.BorrowerRepository = borrowerRepository;
         }
-        private LoginViewModel LoggedInUser
-        {
-            get
-            {
-                return this.Session["User"] as LoginViewModel;
-            }
-        }
 
-        private bool IsBorrowerLoggedIn
-        {
-            get
-            {
-                return (LoggedInUser != null && LoggedInUser.Role == UserRole.Manager);
-            }
-        }
         public ActionResult Index()
         {
-            if (!this.IsBorrowerLoggedIn)
+            if (!this.IsManagerLoggedIn)
             {
                 return RedirectToAction("Index", "Authentication");
             }

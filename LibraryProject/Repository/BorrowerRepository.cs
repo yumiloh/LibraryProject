@@ -62,17 +62,21 @@ namespace LibraryProject.Repository
 
         public List<BookModel> GetBorrowedBook(string borrowerEmail)
         {
-            List<BookModel> borrowedBooks = (Context.BorrowedBooks.Where<BorrowedBookModel>(x => x.Borrower.Email.Equals(borrowerEmail)).Select(x => x.Book)).Distinct().ToList();
-            
-            /*var query = from b in borrowedBooks 
+            List<BookModel> borrowedBooks = (Context.BorrowedBooks.Where<BorrowedBookModel>(x => x.Borrower.Email.Equals(borrowerEmail)).Select(x => x.Book)).ToList();
+
+            /*var query =( from b in borrowedBooks 
                         group b by b.Title into g
-                        select new { Title = g.Key, Total = g.Count() };*/
+                        select new { Title = g.Key, g, Total = g.Count() }).ToList();*/
 
             /*List<BookModel> query = borrowedBooks
                 .GroupBy(x => x.Title)
                 .Select(y => new BookModel() { Title = y.Key, BorrowedCopies = y.Count()}).ToList();*/
 
-           
+            var query =(List<BookModel>) (from b in borrowedBooks
+                         let c = new { b.ID,  b.Title, b.ISBN,  b.NumberOfPages, b.BookCopies, b.BorrowedCopies, b.IsAvailable }
+                         group c by c.Title into MyGroup
+                         select MyGroup);
+
             return borrowedBooks;
         }
 

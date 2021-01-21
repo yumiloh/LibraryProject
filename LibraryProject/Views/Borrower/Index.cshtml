@@ -8,7 +8,7 @@
 <h2>Available Books</h2>
 <h3>Welcome @ViewBag.BorrowerName</h3>
 
-<p>@Html.ActionLink("Borrowed Books", "BorrowedBooks")</p>
+<p>@Html.ActionLink("Books Borrowed", "BooksBorrowed")</p>
 
 <table class="table">
     <tr>
@@ -22,12 +22,11 @@
             @Html.DisplayNameFor(model => model.NumberOfPages)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BookCopies)
+            @Html.DisplayName("Available Copies")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BorrowedCopies)
+            Actions
         </th>
-        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -43,20 +42,20 @@
                 @Html.DisplayFor(modelItem => item.NumberOfPages)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BookCopies)
+                @Html.Raw(item.BookCopies - item.BorrowedCopies)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BorrowedCopies)
-            </td>
-
 
             @if ((item.BookCopies - item.BorrowedCopies) > 0)
             {
                 <td>
-                    @Html.ActionLink("Borrow", "Borrow", new { id = item.ID }) |
-
+                    @Html.ActionLink("Borrow", "Borrow", new { id = item.ID })
                 </td>
             }
+            else
+            {
+                <td></td>
+            }
+
             <td>
                 @Html.ActionLink("Details", "Details", new { id = item.ID })
             </td>

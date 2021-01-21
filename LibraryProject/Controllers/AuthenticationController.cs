@@ -8,10 +8,11 @@ using LibraryProject.ViewModels;
 using LibraryProject.Repository;
 using LibraryProject.DataAccess;
 using LibraryProject.Enums;
+using LibraryProject.Base;
 
 namespace LibraryProject.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : LibraryBaseController
     {
         private IManagerRepository ManagerRepository { get; set; }
         private IBorrowerRepository BorrowerRepository { get; set; }
@@ -34,8 +35,7 @@ namespace LibraryProject.Controllers
             if (databaseUser != null)
             {
                 user.Name = databaseUser.Name;
-                this.Session["User"] = user;
-                this.Session["UserRole"] = Convert.ToString(user.Role);
+                this.CurrentUser = user;
                 return RedirectToAction("Index", Convert.ToString(user.Role));
             }
             else

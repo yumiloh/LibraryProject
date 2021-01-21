@@ -140,6 +140,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="Base\LibraryBaseController.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\BorrowerController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
@@ -214,7 +215,7 @@
     <Content Include="Views\Borrower\Index.cshtml" />
     <Content Include="Views\Borrower\Return.cshtml" />
     <Content Include="Views\Authentication\Index.cshtml" />
-    <Content Include="Views\Borrower\BorrowedBooks.cshtml" />
+    <Content Include="Views\Borrower\BooksBorrowed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
