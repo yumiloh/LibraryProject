@@ -4,10 +4,9 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h3>Book Details</h3>
 
 <div>
-    <h4>Book Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -41,7 +40,6 @@
         <dd>
             @Html.DisplayFor(model => model.Book.BookCopies)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Book.BorrowedCopies)
         </dt>
@@ -53,20 +51,19 @@
     </dl>
     <table class="table">
         <tr>
-            <th>Users borrowed</th>
+            <th>Borrower</th>
             <th>Copies borrowed</th>
         </tr>
         @foreach (var item in Model.Borrowers)
         {
             <tr>
                 <td>
-                    @*<a href="@Url.Action("Details", "Borrower", new {id=item.ID})">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </a>*@
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <a href="@Url.Action("Details", "Manager", new {id=item.Borrower.ID})">
+                        @Html.DisplayFor(modelItem => item.Borrower.Name)
+                    </a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Password)
+                    @Html.DisplayFor(modelItem => item.Count)
                 </td>
             </tr>
         }

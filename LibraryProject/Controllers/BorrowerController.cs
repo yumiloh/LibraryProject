@@ -32,16 +32,15 @@ namespace LibraryProject.Controllers
             {
                 return RedirectToAction("Index", "Authentication");
             }
-
-            this.ViewBag.BorrowerName = this.CurrentUser.Name;
-            List<BookModel> allBooks = BorrowerRepository.GetAllBooks();
-
+            this.ViewBag.UserName = this.CurrentUser.Name;
+            List<Book> allBooks = BorrowerRepository.GetAllBooks();
+            ViewBag.BorrowedBooks = BorrowBooks();
             return View(allBooks);
         }
 
         public ActionResult Details(int? id)
         {
-            BookModel book = LibraryRepository.GetBookByID(id);
+            Book book = LibraryRepository.GetBookByID(id);
             return View(book);
         }
 
@@ -52,7 +51,7 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BookModel borrowedBook = LibraryRepository.GetBookByID(id);
+            Book borrowedBook = LibraryRepository.GetBookByID(id);
             if (borrowedBook == null)
             {
                 return HttpNotFound();
@@ -64,7 +63,7 @@ namespace LibraryProject.Controllers
         public ActionResult BorrowConfirmed(int? id)
         {
             string borrowerEmail = this.CurrentUser?.Email;
-            bool isBorrowed = BorrowerRepository.BorrowBooks(id,borrowerEmail);
+            bool isBorrowed = BorrowerRepository.BorrowBooks(id, borrowerEmail);
             if (isBorrowed)
             {
                 return RedirectToAction("Index");
@@ -82,7 +81,7 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BookModel returnedBook = LibraryRepository.GetBookByID(id);
+            Book returnedBook = LibraryRepository.GetBookByID(id);
             if (returnedBook == null)
             {
                 return HttpNotFound();
@@ -114,15 +113,21 @@ namespace LibraryProject.Controllers
         [HttpGet]
         public ActionResult BooksBorrowed()
         {
-            string borrowerEmail = this.CurrentUser?.Email;
-            var borrowedBooks = BorrowerRepository.GetBorrowedBook(borrowerEmail);
+            List<BookViewModel> borrowedBooks = BorrowBooks();
             return View(borrowedBooks);
         }
+
         protected override void Dispose(bool disposing)
         {
             BorrowerRepository.Dispose();
             LibraryRepository.Dispose();
             base.Dispose(disposing);
+        }
+
+        public List<BookViewModel> BorrowBooks()
+        {
+            string borrowerEmail = this.CurrentUser?.Email;
+            return BorrowerRepository.GetBorrowedBook(borrowerEmail);
         }
     }
 }

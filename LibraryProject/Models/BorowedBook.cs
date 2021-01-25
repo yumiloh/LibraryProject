@@ -5,10 +5,10 @@ using System.Web;
 
 namespace LibraryProject.Models
 {
-    public class BorrowedBookModel
+    public class BorrowedBook
     {
         public int ID { get; set; }
-        public BookModel Book { get; set; }
-        public BorrowerModel Borrower { get; set; }
+        public Book Book { get; set; }
+        public Borrower Borrower { get; set; }
     }
 }

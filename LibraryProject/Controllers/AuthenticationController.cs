@@ -21,11 +21,13 @@ namespace LibraryProject.Controllers
             this.ManagerRepository = managerRepository;
             this.BorrowerRepository = borrowerRepository;
         }
+
         [HttpGet]
         public ActionResult Index()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult Index(LoginViewModel user)
         {

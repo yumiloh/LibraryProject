@@ -1,5 +1,6 @@
 ﻿using LibraryProject.DataAccess;
 using LibraryProject.Models;
+using LibraryProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -11,20 +12,18 @@ namespace LibraryProject.Repository
     public class ManagerRepository : IManagerRepository
     {
         private readonly LibraryContext Context;
-        public ManagerRepository() : this(new LibraryContext())
-        {
-        }
-        
         public ManagerRepository(LibraryContext libraryContext)
         {
             this.Context = libraryContext;
         }
-        public List<BorrowerModel> GetBorrower()
+
+        public List<Borrower> GetBorrower()
         {
 
             return Context.Borrowers.ToList();
         }
-        public BorrowerModel CreateBorrower(BorrowerModel borrower)
+
+        public Borrower CreateBorrower(Borrower borrower)
         {
             var borrowerModel = Context.Borrowers.Add(borrower);
             var saveResult = this.Save();
@@ -38,31 +37,34 @@ namespace LibraryProject.Repository
             }
         }
 
-        public BorrowerModel GetBorrowerByID(int? borrowerID)
+        public Borrower GetBorrowerByID(int? borrowerID)
         {
-
             return Context.Borrowers.Find(borrowerID);
         }
 
-        public int UpdateBorrower(BorrowerModel borrower)
+        public int UpdateBorrower(Borrower borrower)
         {
             Context.Entry(borrower).State = EntityState.Modified;
             return this.Save();
         }
+
         public int DeleteBorrower(int? borrowerID)
         {
-            BorrowerModel borrower = this.GetBorrowerByID(borrowerID);
+            Borrower borrower = this.GetBorrowerByID(borrowerID);
+            
             Context.Borrowers.Remove(borrower);
+
             return this.Save();
         }
+
         public int Save()
         {
             return Context.SaveChanges();
         }
 
-        public UserModel FindManager(UserModel manager)
+        public User FindManager(LoginViewModel manager)
         {
-            return Context.Managers.FirstOrDefault<ManagerModel>(x => x.Email.Equals(manager.Email) && x.Password.Equals(manager.Password));
+            return Context.Managers.FirstOrDefault<Manager>(x => x.Email.Equals(manager.Email) && x.Password.Equals(manager.Password));
         }
 
         private bool disposed = false;

@@ -18,7 +18,6 @@ namespace LibraryProject.Controllers
     public class ManagerController : LibraryBaseController
     {
         private IManagerRepository BorrowerRepository;
-
         public ManagerController(IManagerRepository borrowerRepository)
         {
             this.BorrowerRepository = borrowerRepository;
@@ -30,8 +29,8 @@ namespace LibraryProject.Controllers
             {
                 return RedirectToAction("Index", "Authentication");
             }
-
-            List<BorrowerModel> borrowerModel = BorrowerRepository.GetBorrower();
+            this.ViewBag.UserName = this.CurrentUser.Name;
+            List<Borrower> borrowerModel = BorrowerRepository.GetBorrower();
             return View(borrowerModel);
         }
 
@@ -41,7 +40,9 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             var borrowerModel = new BorrowerViewModel(BorrowerRepository.GetBorrowerByID(id));
+            
             if (borrowerModel == null)
             {
                 return HttpNotFound();
@@ -57,7 +58,7 @@ namespace LibraryProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(BorrowerModel borrowerModel)
+        public ActionResult Create(Borrower borrowerModel)
         {
             if (ModelState.IsValid)
             {
@@ -74,7 +75,7 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BorrowerModel borrowerModel = BorrowerRepository.GetBorrowerByID(id);
+            Borrower borrowerModel = BorrowerRepository.GetBorrowerByID(id);
             if (borrowerModel == null)
             {
                 return HttpNotFound();
@@ -84,7 +85,7 @@ namespace LibraryProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Email,Name")] BorrowerModel borrowerModel)
+        public ActionResult Edit([Bind(Include = "ID,Email,Name")] Borrower borrowerModel)
         {
             if (ModelState.IsValid)
             {
@@ -101,7 +102,8 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BorrowerModel borrowerModel = BorrowerRepository.GetBorrowerByID(id);
+            Borrower borrowerModel = BorrowerRepository.GetBorrowerByID(id);
+            
             if (borrowerModel == null)
             {
                 return HttpNotFound();
@@ -113,6 +115,14 @@ namespace LibraryProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            Borrower borrowerModel = BorrowerRepository.GetBorrowerByID(id);
+            BorrowerViewModel borrower = new BorrowerViewModel(borrowerModel);
+
+            if (borrower.BorrowedBooks.Count > 0)
+            {
+                ViewBag.Error = "Delete fail: this borrower has unreturned books. Please make sure that they have returned all books.";
+                return View(borrowerModel);
+            }
             BorrowerRepository.DeleteBorrower(id);
             return RedirectToAction("Index");
         }

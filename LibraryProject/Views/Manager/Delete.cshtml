@@ -1,4 +1,4 @@
-﻿@model LibraryProject.Models.BorrowerModel
+﻿@model LibraryProject.Models.Borrower
 
 @{
     ViewBag.Title = "Delete";
@@ -29,7 +29,8 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
@@ -37,4 +38,5 @@
             @Html.ActionLink("Back to List", "Index")
         </div>
     }
+    <div class="text-danger">@ViewBag.Error</div>
 </div>

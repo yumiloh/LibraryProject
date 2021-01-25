@@ -11,23 +11,22 @@ namespace LibraryProject.Repository
     public class BorrowerRepository : IBorrowerRepository
     {
         private readonly LibraryContext Context;
-        
+
         public BorrowerRepository(LibraryContext libraryContext)
         {
             this.Context = libraryContext;
         }
-        public List<BookModel> GetAllBooks()
+        public List<Book> GetAllBooks()
         {
-            //List<BookModel> books = Context.Books.Where<BookModel>(x => (x.BookCopies - x.BorrowedCopies) > 0).ToList();   
             return Context.Books.ToList();
         }
         public bool BorrowBooks(int? bookID, string borrowerEmail)
         {
-            BookModel book = this.FindBook(bookID);
+            Book book = this.FindBook(bookID);
             if (book.IsAvailable)
             {
-                var borrower = Context.Borrowers.First<BorrowerModel>(x => x.Email.Equals(borrowerEmail));
-                var borrowedBook = new BorrowedBookModel() { Book = book, Borrower = borrower };
+                var borrower = Context.Borrowers.First<Borrower>(x => x.Email.Equals(borrowerEmail));
+                var borrowedBook = new BorrowedBook() { Book = book, Borrower = borrower };
                 Context.BorrowedBooks.Add(borrowedBook);
                 book.BorrowedCopies += 1;
                 this.Save();
@@ -38,8 +37,8 @@ namespace LibraryProject.Repository
 
         public bool ReturnBooks(int? bookID, string borrowerEmail)
         {
-            BookModel book = this.FindBook(bookID);
-            BorrowedBookModel returnedBook = Context.BorrowedBooks.First(x => x.Book.ID.Equals(book.ID) && x.Borrower.Email.Equals(borrowerEmail));
+            Book book = this.FindBook(bookID);
+            BorrowedBook returnedBook = Context.BorrowedBooks.First(x => x.Book.ID.Equals(book.ID) && x.Borrower.Email.Equals(borrowerEmail));
             Context.BorrowedBooks.Remove(returnedBook);
             book.BorrowedCopies -= 1;
             this.Save();
@@ -51,36 +50,35 @@ namespace LibraryProject.Repository
             return Context.SaveChanges();
         }
 
-        public UserModel FindBorrower(UserModel borrower)
+        public User FindBorrower(LoginViewModel borrower)
         {
-            BorrowerModel returnBorrower = Context.Borrowers.FirstOrDefault<BorrowerModel>(x => x.Email.Equals(borrower.Email) && x.Password.Equals(borrower.Password));
-
-
+            Borrower returnBorrower = Context.Borrowers.FirstOrDefault<Borrower>(x => x.Email.Equals(borrower.Email) && x.Password.Equals(borrower.Password));
             return returnBorrower;
         }
 
 
-        public List<BookModel> GetBorrowedBook(string borrowerEmail)
+        public List<BookViewModel> GetBorrowedBook(string borrowerEmail)
         {
-            List<BookModel> borrowedBooks = (Context.BorrowedBooks.Where<BorrowedBookModel>(x => x.Borrower.Email.Equals(borrowerEmail)).Select(x => x.Book)).ToList();
+            var booksBorrowed = (  from b in Context.Books
+                                   join bb in Context.BorrowedBooks on b.ID equals bb.Book.ID
+                                   join bor in Context.Borrowers on bb.Borrower.ID equals bor.ID
+                                   where bor.Email.Equals(borrowerEmail)
+                                   group b by b into g
+                                   select new { Book = g.Key, Count = g.Count() }).ToList();
 
-            /*var query =( from b in borrowedBooks 
-                        group b by b.Title into g
-                        select new { Title = g.Key, g, Total = g.Count() }).ToList();*/
+            var booksBorrowedList = new List<BookViewModel>();
 
-            /*List<BookModel> query = borrowedBooks
-                .GroupBy(x => x.Title)
-                .Select(y => new BookModel() { Title = y.Key, BorrowedCopies = y.Count()}).ToList();*/
+            foreach (var item in booksBorrowed)
+            {
+                var bookViewModel = new BookViewModel(item.Book);
+                bookViewModel.Count = item.Count;
+                booksBorrowedList.Add(bookViewModel);
+            }
 
-            var query =(List<BookModel>) (from b in borrowedBooks
-                         let c = new { b.ID,  b.Title, b.ISBN,  b.NumberOfPages, b.BookCopies, b.BorrowedCopies, b.IsAvailable }
-                         group c by c.Title into MyGroup
-                         select MyGroup);
-
-            return borrowedBooks;
+            return booksBorrowedList;
         }
 
-        public BookModel FindBook(int? bookID)
+        public Book FindBook(int? bookID)
         {
             return Context.Books.Find(bookID);
         }

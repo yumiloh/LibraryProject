@@ -1,4 +1,4 @@
-﻿@model LibraryProject.Models.BookModel
+﻿@model LibraryProject.Models.Book
 
 @{
     ViewBag.Title = "Delete";
@@ -7,6 +7,7 @@
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
+
 <div>
     <h4>Book Details</h4>
     <hr />
@@ -53,7 +54,8 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
@@ -61,4 +63,5 @@
             @Html.ActionLink("Back to List", "Index")
         </div>
     }
+    <div class="text-danger">@ViewBag.Error</div>
 </div>

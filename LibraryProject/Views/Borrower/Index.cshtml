@@ -1,12 +1,14 @@
-﻿@model IEnumerable<LibraryProject.Models.BookModel>
-@using LibraryProject.Models
+﻿@model IEnumerable<LibraryProject.Models.Book>
+@using LibraryProject.ViewModels
 
 @{
     ViewBag.Title = "Index";
+    var borrowedBooks = ViewBag.BorrowedBooks as List<BookViewModel>;
 }
 
+<div class="nav navbar-nav navbar-right"></div>
+
 <h2>Available Books</h2>
-<h3>Welcome @ViewBag.BorrowerName</h3>
 
 <p>@Html.ActionLink("Books Borrowed", "BooksBorrowed")</p>
 
@@ -24,9 +26,9 @@
         <th>
             @Html.DisplayName("Available Copies")
         </th>
-        <th>
-            Actions
-        </th>
+        <th></th>
+        <th></th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -56,10 +58,19 @@
                 <td></td>
             }
 
+            @if (borrowedBooks.Select(x => x.Book.Title).Contains((item.Title)))
+            {
+                <td>
+                    @Html.ActionLink("Return", "Return", new { id = item.ID })
+                </td>
+            }
+            else
+            {
+                <td></td>
+            }
             <td>
                 @Html.ActionLink("Details", "Details", new { id = item.ID })
             </td>
         </tr>
     }
-
 </table>

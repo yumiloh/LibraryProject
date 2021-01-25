@@ -6,7 +6,7 @@ using System.Web;
 
 namespace LibraryProject.Models
 {
-    public class UserModel
+    public class User
     {
         public int ID { get; set; }
         [Required]

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-@using LibraryProject.Base
+@using LibraryProject.Enums
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,34 +17,38 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li> @Html.ActionLink("Book", "Index", "Book", new { area = "" }, new { @class = "navbar-brand" }) </li>
-                        <li>@Html.ActionLink("Borrow Books", "Index", "Borrower", new { area = "" }, new { @class = "navbar-brand" })</li>
-                        <li>@Html.ActionLink("Manager", "Index", "Manager", new { area = "" }, new { @class = "navbar-brand" })</li>
-
-                        @if (Session["LoggedInUser"] != null)
-                        {
-                            <li>
-                                @Html.ActionLink("Logout", "Logout", "Authentication", new { area = "" }, new { @class = "navbar-brand" })
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                @Html.ActionLink("Login", "Index", "Authentication", new { area = "" }, new { @class = "navbar-brand" })
-                            </li>
-                        }
-                    </ul>
-                </div>
             </div>
-            @*<div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                        <li>@Html.ActionLink("About", "About", "Home")</li>
-                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            <div class="navbar-collapse collapse">
+                @if (Session["LoggedInUser"] != null)
+                {
+
+                    if (Session["UserRole"].Equals(UserRole.Manager))
+                    {
+                        @Html.ActionLink("Manage Book", "Index", "Book", new { area = "" }, new { @class = "navbar-brand" })
+                        @Html.ActionLink("Manage Borrower", "Index", "Manager", new { area = "" }, new { @class = "navbar-brand" })
+                    }
+                    else if (Session["UserRole"].Equals(UserRole.Borrower))
+                    {
+                        @Html.ActionLink("Borrow Books", "Index", "Borrower", new { area = "" }, new { @class = "navbar-brand" })
+                    }
+
+                    <ul class="pull-right nav navbar-nav">
+                        @Html.ActionLink("  Logout", "Logout", "Authentication", new { area = "" }, new { @class = "navbar-brand pull-right" })
                     </ul>
-                </div>*@
+                    <div class="navbar-brand navbar-right"></div>
+                    <ul class="navbar-brand navbar-nav navbar-right">
+                        Welcome @ViewBag.UserName
+                    </ul>
+                }
+                else
+                {
+                    <ul class="pull-right nav navbar-nav">
+                        @Html.ActionLink("Login", "Index", "Authentication", new { area = "" }, new { @class = "navbar-brand" })
+                    </ul>
+                }
+
+            </div>
+
         </div>
     </div>
     <div class="container body-content">

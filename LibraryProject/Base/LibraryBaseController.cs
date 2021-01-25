@@ -40,6 +40,7 @@ namespace LibraryProject.Base
             set
             {
                 this.Session["LoggedInUser"] = value;
+                this.Session["UserRole"] = value.Role;
             }
         }
     }

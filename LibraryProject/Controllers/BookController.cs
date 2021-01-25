@@ -12,7 +12,6 @@ namespace LibraryProject.Controllers
     public class BookController : LibraryBaseController
     {
         private ILibraryRepository LibraryRepository { get; set; }
-
         public BookController(ILibraryRepository libraryRepository)
         {
             this.LibraryRepository = libraryRepository;
@@ -20,25 +19,29 @@ namespace LibraryProject.Controllers
 
         public ActionResult Index()
         {
-            List<BookModel> books = LibraryRepository.GetBooks();
+            if (!this.IsManagerLoggedIn)
+            {
+                return RedirectToAction("Index", "Authentication");
+            }
+            List<Book> books = LibraryRepository.GetBooks();
             ViewBag.IsManager = this.IsManagerLoggedIn;
             return View(books);
         }
-        
-        public ActionResult Details (int ? id)
+
+        public ActionResult Details(int? id)
         {
-            BookModel book = LibraryRepository.GetBookByID(id);
+            Book book = LibraryRepository.GetBookByID(id);
             var bookViewModel = new BookViewModel(book);
             return View(bookViewModel);
         }
-        
+
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(BookModel model)
+        public ActionResult Create(Book model)
         {
             var isValidData = ModelState.IsValid;
             if (isValidData)
@@ -51,7 +54,7 @@ namespace LibraryProject.Controllers
                 return View();
             }
         }
-        
+
         [HttpGet]
         public ActionResult Edit(int? id)
         {
@@ -59,7 +62,7 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
-            BookModel book = LibraryRepository.GetBookByID(id);
+            Book book = LibraryRepository.GetBookByID(id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -68,7 +71,7 @@ namespace LibraryProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(BookModel model)
+        public ActionResult Edit(Book model)
         {
             var isValidData = ModelState.IsValid;
             if (isValidData)
@@ -81,7 +84,7 @@ namespace LibraryProject.Controllers
                 return View();
             }
         }
-        
+
         [HttpGet]
         public ActionResult Delete(int? id)
         {
@@ -89,21 +92,31 @@ namespace LibraryProject.Controllers
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
-            BookModel book = LibraryRepository.GetBookByID(id);
-            if (book == null)
+            Book bookModel = LibraryRepository.GetBookByID(id);
+            if (bookModel == null)
             {
                 return HttpNotFound();
             }
-            return View(book);
+            return View(bookModel);
         }
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int? id)
         {
+            Book bookModel = LibraryRepository.GetBookByID(id);
+            BookViewModel book = new BookViewModel(bookModel);
+
+            if (book.Borrowers.Count > 0)
+            {
+                ViewBag.Error = "Delete fail: this book is borrowed. Please make sure the borrowers have returned all copies.";
+                return View(bookModel);
+            }
+
             LibraryRepository.DeleteBook(id);
             //TODO: throw an error if it cannot return 1 
             return RedirectToAction("Index");
         }
+
         protected override void Dispose(bool disposing)
         {
             LibraryRepository.Dispose();

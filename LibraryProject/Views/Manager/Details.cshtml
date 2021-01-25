@@ -4,10 +4,9 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h3>Borrower Details</h3>
 
 <div>
-    <h4>Borrower Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -36,13 +35,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                    @*<a href="@Url.Action("Details", "Book", new {id=item.ID})">
-
-                    </a>*@
+                    
+                    <a href="@Url.Action("Details", "Book", new {id=item.Book.ID})">
+                        @Html.DisplayFor(modelItem => item.Book.Title)
+                    </a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BorrowedCopies)
+                    @Html.DisplayFor(modelItem => item.Count)
                 </td>
             </tr>
         }

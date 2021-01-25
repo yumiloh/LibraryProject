@@ -151,11 +151,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\BookModel.cs" />
-    <Compile Include="Models\BorrowedBookModel.cs" />
-    <Compile Include="Models\BorrowerModel.cs" />
-    <Compile Include="Models\ManagerModel.cs" />
-    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BorowedBook.cs" />
+    <Compile Include="Models\Borrower.cs" />
+    <Compile Include="Models\Manager.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\BorrowerRepository.cs" />
     <Compile Include="Repository\IBorrowerRepository.cs" />

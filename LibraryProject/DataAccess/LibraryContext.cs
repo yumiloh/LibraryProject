@@ -12,9 +12,9 @@ namespace LibraryProject.DataAccess
         public LibraryContext() : base("name=LibraryConnection")
         { 
         }
-        public DbSet<BookModel> Books { get; set;}        
-        public DbSet<ManagerModel> Managers { get; set;}        
-        public DbSet<BorrowerModel> Borrowers { get; set; }
-        public DbSet<BorrowedBookModel> BorrowedBooks { get; set; }
+        public DbSet<Book> Books { get; set;}        
+        public DbSet<Manager> Managers { get; set;}        
+        public DbSet<Borrower> Borrowers { get; set; }
+        public DbSet<BorrowedBook> BorrowedBooks { get; set; }
     }
 }

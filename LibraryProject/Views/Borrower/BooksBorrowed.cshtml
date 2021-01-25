@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibraryProject.Models.BookModel>
+﻿@model IEnumerable<LibraryProject.ViewModels.BookViewModel>
 
 @{
     ViewBag.Title = "BorrowedBooks";
@@ -9,32 +9,38 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Book.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ISBN)
+            @Html.DisplayNameFor(model => model.Book.ISBN)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.NumberOfPages)
+            @Html.DisplayNameFor(model => model.Book.NumberOfPages)
         </th>
+        <th>
+            @Html.DisplayName("Copies Borrowed")
+        </th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.Book.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ISBN)
+                @Html.DisplayFor(modelItem => item.Book.ISBN)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NumberOfPages)
+                @Html.DisplayFor(modelItem => item.Book.NumberOfPages)
             </td>
             <td>
-                @Html.ActionLink("Return Book", "Return", new { id = item.ID })
+                @Html.DisplayFor(modelItem => item.Count)
             </td>
-
+            <td>
+                @Html.ActionLink("Return", "Return", new { id = item.Book.ID })
+            </td>
         </tr>
     }
 

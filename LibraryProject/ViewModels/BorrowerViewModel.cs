@@ -9,25 +9,41 @@ using System.Web;
 
 namespace LibraryProject.ViewModels
 {
-    //used to show number of books borrowed by a certain borrower in manager detail view
+    //Show number of books borrowed by a certain borrower in manager detail view
     public class BorrowerViewModel
     {
-        public BorrowerModel Borrower { get; private set; }
-        public BorrowerViewModel(BorrowerModel borrower)
+        public int Count { get; set; }
+        public Borrower Borrower { get; private set; }
+        public BorrowerViewModel(Borrower borrower)
         {
             this.Borrower = borrower;
         }
         public BorrowerViewModel() { }
         [DisplayName("Borrowed Books")]
-        public List<BookModel> BorrowedBooks
+        public List<BookViewModel> BorrowedBooks
         {
             get
             {
                 LibraryContext libraryContext = new LibraryContext();
-                List<BookModel> books = (libraryContext.BorrowedBooks.Where(x => x.Borrower.Email.Equals(this.Borrower.Email)).Select(x => x.Book)).ToList();
-                List<BookModel> bookModels = books.GroupBy(x => x.Title).Select(y => new BookModel() { Title = y.Key, BorrowedCopies = y.Count() }).ToList();
+                var booksBorrowed = (
+                    from b in libraryContext.Books
+                    join bb in libraryContext.BorrowedBooks on b.ID equals bb.Book.ID
+                    join bor in libraryContext.Borrowers on bb.Borrower.ID equals bor.ID
+                    where bor.Email.Equals(this.Borrower.Email)
+                    group b by b into g
+                    select new { Book = g.Key, Count = g.Count() }).ToList();
+                    
+                var booksBorrowedList = new List<BookViewModel>();
 
-                return bookModels;
+                foreach (var item in booksBorrowed)
+                {
+                    var bookViewModel = new BookViewModel(item.Book);
+                    bookViewModel.Count = item.Count;
+
+                    booksBorrowedList.Add(bookViewModel);
+                }
+
+                return booksBorrowedList;
             }
         }
 

@@ -7,22 +7,39 @@ using System.Web;
 
 namespace LibraryProject.ViewModels
 {
-    //used to show users who borrowed a certain number of copies in book detail view
+    //Show users who borrowed a certain number of copies in book detail view
     public class BookViewModel
     {
-        public BookModel Book { get; private set; }
-        public BookViewModel(BookModel book)
+        public int Count { get; set; }
+        public Book Book { get; private set; }
+        public BookViewModel(Book book = null)
         {
             this.Book = book;
         }
-        public List<BorrowerModel> Borrowers
+        public List<BorrowerViewModel> Borrowers
         {
             get
             {
                 LibraryContext libraryContext = new LibraryContext();
-                List<BorrowerModel> borrower = (libraryContext.BorrowedBooks.Where(x => x.Book.ID == this.Book.ID).Select(x => x.Borrower)).ToList();
-                List<BorrowerModel> borrowerModels = borrower.GroupBy(x => x.Name).Select(y => new BorrowerModel() { Name = y.Key, Password = y.Count().ToString() }).ToList();
-                return borrowerModels;
+                var borrowers = (
+                    from bor in libraryContext.Borrowers
+                    join bb in libraryContext.BorrowedBooks on bor.ID equals bb.Borrower.ID
+                    join books in libraryContext.Books on bb.Book.ID equals books.ID
+                    where books.ID.Equals(this.Book.ID)
+                    group bor by bor into g
+                    select new { Borrower= g.Key, Count = g.Count() }).ToList();
+
+                var borrowersList = new List<BorrowerViewModel>();
+
+                foreach (var item in borrowers)
+                {
+                    var borrowerViewModel = new BorrowerViewModel(item.Borrower);
+                    borrowerViewModel.Count = item.Count;
+
+                    borrowersList.Add(borrowerViewModel);
+                }
+
+                return borrowersList;
             }
         }
     }

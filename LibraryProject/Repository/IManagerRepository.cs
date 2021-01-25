@@ -1,4 +1,5 @@
 ﻿using LibraryProject.Models;
+using LibraryProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace LibraryProject.Repository
 {
     public interface IManagerRepository: IDisposable
     {
-        List<BorrowerModel> GetBorrower();
-        BorrowerModel GetBorrowerByID(int? borrowerID);
-        BorrowerModel CreateBorrower(BorrowerModel borrower);
+        List<Borrower> GetBorrower();
+        Borrower GetBorrowerByID(int? borrowerID);
+        Borrower CreateBorrower(Borrower borrower);
         int DeleteBorrower(int? borrowerID);
-        int UpdateBorrower(BorrowerModel borrower);
+        int UpdateBorrower(Borrower borrower);
         int Save();
-        UserModel FindManager(UserModel manager);
+        User FindManager(LoginViewModel manager);
     }
 }

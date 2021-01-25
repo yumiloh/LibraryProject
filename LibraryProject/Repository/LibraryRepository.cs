@@ -11,22 +11,22 @@ namespace LibraryProject.Repository
     public class LibraryRepository : ILibraryRepository
     {
         private readonly LibraryContext Context;
-        public LibraryRepository() : this(new LibraryContext())
-        {
-        }
         public LibraryRepository(LibraryContext libraryContext)
         {
             this.Context = libraryContext;
         }
-        public List<BookModel> GetBooks()
+
+        public List<Book> GetBooks()
         {
             return Context.Books.ToList();
         }
-        public BookModel GetBookByID(int? bookID)
+
+        public Book GetBookByID(int? bookID)
         {
             return Context.Books.Find(bookID);
         }
-        public BookModel CreateBook(BookModel book)
+
+        public Book CreateBook(Book book)
         {
             var bookModel = Context.Books.Add(book);
             var saveResult = this.Save();
@@ -43,19 +43,22 @@ namespace LibraryProject.Repository
         public int DeleteBook(int? bookID)
         {
             //TODO: need to be updated. Once a book get deleted, if it's borrowed by a user, the entry is deleted too 
-            BookModel book = this.GetBookByID(bookID);
+            Book book = this.GetBookByID(bookID);
             Context.Books.Remove(book);
             return this.Save();
         }
-        public int UpdateBook(BookModel book)
+
+        public int UpdateBook(Book book)
         {
             Context.Entry(book).State = EntityState.Modified;
             return this.Save();
         }
+
         public int Save()
         {
             return Context.SaveChanges();
         }
+
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
         {
